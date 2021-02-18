@@ -9,36 +9,35 @@
 	<link rel="stylesheet" href="css/styles.css">
 	<title>Web App From Scratch - Minor Web Development - Theatre</title>
 	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
 		rel="stylesheet">
-	<script type="module" src="./js/script.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js"
+		integrity="sha256-2JRzNxMJiS0aHOJjG+liqsEOuBb6++9cY4dSOyiijX4=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-	<header>
-		<nav>
-			<a href="#"><img src="./img/logo.svg" alt=""></a>
-			<!-- <form>
-				<input type="text" id="search" placeholder="Search">
-				<button id="button"> submit</button>
-			</form> -->
-		</nav>
-	</header>
-
+	<!--navigatie-->
+	<nav>
+		<a href="#" class="logo">
+			<img src="img/logo.svg" alt="">
+		</a>
+		<form>
+			<div class="search">
+				<input type="text" placeholder="Search">
+				<i class="fas fa-plus fa-1x"></i>
+			</div>
+		</form>
+	</nav>
 	<main>
 		<section>
-			<h1>We bring theatre to you</h1>
-			<h2>We recommend action as todays most popular genre</h2>
-		</section>
-
-		<section class="movieList">
+			<h1>Hall of Fame</h1>
+			<div class="showcase-box">
+				<div class="movieList"></div>
+			</div>
 		</section>
 	</main>
-
-	<!-- <footer>
-      Jeffrey van Kampen © CMD Amsterdam
-    </footer> -->
 	<script src="./js/routie/routie.js"></script>
+	<script type="module" src="./js/script.js"></script>
 </body>
+
 </html>

@@ -1,28 +1,57 @@
+//comments om de applicatie te verantwoorden
+//code splitsen modules 
+//routie checkt de url, of er een hashtag is, en dan kun je een functie aanroepen
+
+// import { getData } from './dataFetch.js'
+// import { showData } from './displayData.js'
+
 const search = document.querySelector('#search')
 const button = document.querySelector('#button')
+const container = document.querySelector(".container");
 
 function handleRoutes() {
   routie({
-    '': () => {
-      getData()
+    '': () => { //als de url nog geen hashtag heeft
+      getHome()
     },
-    ':id': id => {
-      getData(id)
+    ':id': id => { //als de url een hashtag heeft, in dit geval movieID dan krijgt hij iets terug
+      getDetail(id) //getDetail is de opbouw om de API terug te krijgen
     }
   });
 }
 
-// button.addEventListener('click', readInput)
-
-async function getData(value) {
+async function getHome() {
+  console.log('laadt home');
+  //data ophalen via getData
   const key = '827f3e5d';
   const endpoint = 'https://www.omdbapi.com/';
-  let url = `${endpoint}?apikey=${key}&s=new`;
+  let url = `${endpoint}?apikey=${key}&s=fantastic`;
+  const id = "";
+  const data = await getData(id);
+  console.log(data);
+  //en dan tonen
+}
 
-  if (value) {
-    url = `${endpoint}?apikey=${key}&i=${value}`;
+async function getDetail(id) { 
+  console.log('laadt detail');
+}
+
+async function getData(value) {
+  if (value === undefined) {
+    console.log('toon overzicht')
   }
-  // getData met de input combineren
+
+  console.log(value)
+  // const key = '827f3e5d';
+  // const endpoint = 'https://www.omdbapi.com/';
+  // let url = `${endpoint}?apikey=${key}&s=fantastic`;
+
+  if (value.length > 0) {
+    console.log('laadt detailpagina')
+    url = `${endpoint}?apikey=${key}&i=${value}`;
+  } else {
+    console.log('laadt overzichtspagina');
+  }
 
   await fetch(url)
     .then(response => response.json())
@@ -37,25 +66,36 @@ function showData(data) { // toont de data op de website
   movieList.innerHTML = '';
   if (data.Search) { //Search is alleen beschikbaar met een lijst van meerdere zoekresultaten via de tag
     const movies = data.Search; // met de 'await' wacht het script tot de data geladen is
-    console.log(movies); // kan je in de console kijken wat de mogelijk data is
-    const movieArray = movies.map(movie => {
-      return (
-        `<a href="#${movie.imdbID}"><article><img src=${movie.Poster}/><h2> ${movie.Title}</h2></article></a>`
-      )
+
+    movies.forEach(movie => {
+      const link = document.createElement("a")
+      const article = document.createElement("article")
+      const title = document.createElement("h3")
+      const img = document.createElement("img")
+
+      link.setAttribute('href', '#' + movie.imdbID) //vult de href met de endpoint (#) van film ID aan
+      img.setAttribute('src', movie.Poster) //zet bij beide regels een attribuut om de inhoud en endpoint te combineren
+      title.textContent = movie.Title;
+
+      article.appendChild(title)
+      link.appendChild(article)
+      article.appendChild(img)
+      movieList.appendChild(link)
+
     })
-    movieList.insertAdjacentHTML('beforeend', movieArray.join(' '));
   } else { //Bij enkel resultaat voer de else functie uit
 
     const movie = data
+    const title = document.createElement("h2");
+
+    title.textContent = movie.Title;
+    container.appendChild(title);
+
     const movieDetail =
-      `<article><h2>Film ${movie.Title}</h2></article>`
+    `<article><h2>Film ${movie.Title}</h2></article>`
     movieList.insertAdjacentHTML('beforeend', movieDetail);
     console.log(data)
   }
-}
-
-function readInput() {
-  inputValue = search.value
 }
 
 handleRoutes()
