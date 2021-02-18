@@ -5,9 +5,11 @@
 // import { getData } from './dataFetch.js'
 // import { showData } from './displayData.js'
 
-const search = document.querySelector('#search')
-const button = document.querySelector('#button')
+// const search = document.querySelector('#search');
+const button = document.querySelector('#button');
 const container = document.querySelector(".container");
+const search = document.getElementById('search');
+console.log(search);
 
 function handleRoutes() {
   routie({
@@ -20,13 +22,23 @@ function handleRoutes() {
   });
 }
 
+search.addEventListener("submit", async function(event) { //triggert event 
+  event.preventDefault(); //preventdefault voorkomt de standaard actie
+  const query = event.target[0].value //leest de waarde van het zoekveld
+  if(query.length > 0) { 
+    const data = await apiCall('detail', '', query);
+    const resultaten = data;
+    toonDetail(resultaten);    
+  }
+})
+
 async function getHome() {
   const data = await apiCall('overzicht');
   const resultaten = data.Search;
   toonResultaten(resultaten);
 }
 
-function card(id, title, image){
+function card(id, title, image) {
   return `<a href="#${id}">
             <div class="card">
               <h3>${title}</h3>
@@ -39,18 +51,34 @@ function card(id, title, image){
 function toonResultaten(resultaten) {
   const movieList = document.querySelector('.movieList');
 
+  const details = document.querySelector('.details');
+
+  if (details) {
+    details.style.display = "none";
+  }
+
   resultaten.forEach(movie => {
     console.log(movie);
     movieList.insertAdjacentHTML('beforeend', card(movie.imdbID, movie.Title, movie.Poster));
   });
 }
 
-function toonDetail(details){
+function toonDetail(details) {
   const movieList = document.querySelector('.movieList');
-  movieList.insertAdjacentHTML('beforeend', `<div class="details"><h1>${details.Title}</h1></div>`);
+  document.querySelectorAll('.card').forEach((card) => {
+    card.style.display = "none";
+  });
+  movieList.insertAdjacentHTML('beforeend', `
+  <div class="details">
+  <a href="">Terug naar overzicht</a>
+  <h1>${details.Title}</h1>
+  <img src="${details.Poster}" style="width:300px">
+  <p>${details.Plot}</p>
+  </div>
+  `);
 }
 
-async function getDetail(id) { 
+async function getDetail(id) {
   console.log('laadt detail');
   const data = await apiCall('detail', id);
   //const id = document.location.hash();
@@ -59,21 +87,28 @@ async function getDetail(id) {
 
 }
 
-async function apiCall(call, id) {
+async function apiCall(call, id, query) {
   const key = '827f3e5d';
   const endpoint = 'https://www.omdbapi.com/';
-  const query = "Fantastic";
+  console.log(query);
+  if(query === undefined){
+    query = "Fantastic";
+  }
   let url = "";
-  if(call == "overzicht"){
-     url = `${endpoint}?apikey=${key}&s=${query}`;
-     const fetchRequest =  await fetch(url).then(response => response.json()).then(data => {return data});
-     return fetchRequest;
-  } else if(call == "detail"){
+  if (call == "overzicht") {
+    url = `${endpoint}?apikey=${key}&s=${query}`;
+    const fetchRequest = await fetch(url).then(response => response.json()).then(data => {
+      return data
+    });
+    return fetchRequest;
+  } else if (call == "detail") {
     console.log(id);
     url = `${endpoint}?apikey=${key}&i=${id}`;
-    const fetchRequest =  await fetch(url).then(response => response.json()).then(data => {return data});
+    const fetchRequest = await fetch(url).then(response => response.json()).then(data => {
+      return data
+    });
     console.log(fetchRequest)
-    return fetchRequest;        
+    return fetchRequest;
   }
 }
 

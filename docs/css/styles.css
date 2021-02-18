@@ -73,7 +73,10 @@ h3 {
 	font-size: 1.3rem;
 	font-weight: 300;
 	color: #000657;
-	display: none;
+}
+
+.card {
+	margin: 0 5vw;
 }
 
 /* .movieList {
