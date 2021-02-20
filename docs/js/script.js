@@ -22,13 +22,14 @@ function handleRoutes() {
   });
 }
 
-search.addEventListener("submit", async function(event) { //triggert event 
+search.addEventListener("submit", async function (event) { //triggert event 
   event.preventDefault(); //preventdefault voorkomt de standaard actie
   const query = event.target[0].value //leest de waarde van het zoekveld
-  if(query.length > 0) { 
-    const data = await apiCall('detail', '', query);
-    const resultaten = data;
-    toonDetail(resultaten);    
+  
+  if (query.length > 0) {
+    const data = await apiCall('overzicht', resultaat, query);
+    const resultaat = data.Search
+    toonResultaat(resultaat);
   }
 })
 
@@ -47,10 +48,12 @@ function card(id, title, image) {
           </a>
   `;
 }
+function toonResultaat(movie){
+  const movieList = document.querySelector('.movieList');
+  movieList.insertAdjacentHTML('beforeend', card(movie.imdbID, movie.Title, movie.Poster));
+}
 
 function toonResultaten(resultaten) {
-  const movieList = document.querySelector('.movieList');
-
   const details = document.querySelector('.details');
 
   if (details) {
@@ -58,8 +61,7 @@ function toonResultaten(resultaten) {
   }
 
   resultaten.forEach(movie => {
-    console.log(movie);
-    movieList.insertAdjacentHTML('beforeend', card(movie.imdbID, movie.Title, movie.Poster));
+    toonResultaat(movie)
   });
 }
 
@@ -84,10 +86,9 @@ async function getDetail(id) {
   //const id = document.location.hash();
   const resultaten = data;
   toonDetail(resultaten);
-
 }
 
-async function apiCall(call, id, query) {
+async function apiCall(call, id, query) { //call is (templates) of de pagina aangeven
   const key = '827f3e5d';
   const endpoint = 'https://www.omdbapi.com/';
   console.log(query);
@@ -111,64 +112,5 @@ async function apiCall(call, id, query) {
     return fetchRequest;
   }
 }
-
-// async function getData(value) {
-//   if (value === undefined) {
-//     console.log('toon overzicht')
-//   }
-
-//   console.log(value)
-
-//   if (value.length > 0) {
-//     console.log('laadt detailpagina')
-//     url = `${endpoint}?apikey=${key}&i=${value}`;
-//   } else {
-//     console.log('laadt overzichtspagina');
-//   }
-
-//   await fetch(url)
-//     .then(response => response.json())
-//     .then(data => showData(data))
-//     .catch(err => {
-//       console.log(err);
-//     });
-// }
-
-// function showData(data) { // toont de data op de website
-//   const movieList = document.querySelector('.movieList');
-//   movieList.innerHTML = '';
-//   if (data.Search) { //Search is alleen beschikbaar met een lijst van meerdere zoekresultaten via de tag
-//     const movies = data.Search; // met de 'await' wacht het script tot de data geladen is
-
-//     movies.forEach(movie => {
-//       const link = document.createElement("a")
-//       const article = document.createElement("article")
-//       const title = document.createElement("h3")
-//       const img = document.createElement("img")
-
-//       link.setAttribute('href', '#' + movie.imdbID) //vult de href met de endpoint (#) van film ID aan
-//       img.setAttribute('src', movie.Poster) //zet bij beide regels een attribuut om de inhoud en endpoint te combineren
-//       title.textContent = movie.Title;
-
-//       article.appendChild(title)
-//       link.appendChild(article)
-//       article.appendChild(img)
-//       movieList.appendChild(link)
-
-//     })
-//   } else { //Bij enkel resultaat voer de else functie uit
-
-//     const movie = data
-//     const title = document.createElement("h2");
-
-//     title.textContent = movie.Title;
-//     container.appendChild(title);
-
-//     const movieDetail =
-//     `<article><h2>Film ${movie.Title}</h2></article>`
-//     movieList.insertAdjacentHTML('beforeend', movieDetail);
-//     console.log(data)
-//   }
-// }
 
 handleRoutes()
